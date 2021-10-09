@@ -46,9 +46,11 @@ async def main():
     await sleep(1)
 
     tasks = []
-    for i in range(10 ** 4):
+    for i in range(10 ** 1):
         # await sleep(0.001)
         tasks.append(asyncio.create_task(job(i)))
+    for t in tasks:
+        print(t.done(), t.cancelled())
     await asyncio.gather(*tasks)
     log('finishing main')
     await sleep(10)
