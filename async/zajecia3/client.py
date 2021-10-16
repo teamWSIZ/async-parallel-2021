@@ -3,6 +3,7 @@ from dataclasses import dataclass
 import aiohttp
 import asyncio
 
+
 # https://docs.aiohttp.org/en/stable/client_quickstart.html
 
 @dataclass
@@ -15,8 +16,8 @@ async def main():
         async with session.get('http://localhost:4000/welcome') as resp:
             print(resp.status)
             print(await resp.text())
-            d = await resp.json()
-            print(MyResponse(**d))
+            d = await resp.json()  # tu mamy "słownik"
+            print(MyResponse(**d))  # tu tworzymy instancję klasy MyResponse
 
 
 loop = asyncio.get_event_loop()
