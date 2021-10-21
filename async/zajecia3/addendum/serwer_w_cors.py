@@ -24,8 +24,15 @@ async def hello(request):
     return web.json_response({'comment': 'OK'})
 
 
-@routes.get('/welcome')
+@routes.get('/welcome/{id}')
 async def hello(request):
+    print('from get')
+    return web.json_response({'comment': 'Welcome!'})
+
+
+@routes.put('/welcome/{id}')
+async def hellx(request):
+    print('from put')
     return web.json_response({'comment': 'Welcome!'})
 
 
@@ -38,6 +45,23 @@ async def hello(request):
     return web.json_response({'result': xx})
 
 
+#  setup generous CORS:
 app = web.Application()
-app.add_routes(routes)
-web.run_app(app, port=4000)
+
+cors = aiohttp_cors.setup(app, defaults={
+    "*": aiohttp_cors.ResourceOptions(
+        allow_credentials=True,
+        expose_headers="*",
+        allow_headers="*",
+    )
+})
+
+app.router.add_routes(routes)
+
+print(app.router.routes())
+
+for route in list(app.router.routes()):
+    print(f'adding {route}')
+    cors.add(route)
+
+web.run_app(app, port=4001)
