@@ -1,0 +1,30 @@
+
+
+
+
+
+
+                           Event loop (MainThread)
+
+                     ◄──────────────────────────────── ◄─┐
+                     │                                   │                 Thread pool (osobny wątek/wątki)
+       taski         │                                   │
+                     │                                   │               ◄─────── ◄┐
+        ────         │                                   │                         │
+                     │                                   │               │         │
+        ────         │                                   │               │         │
+                     │                                   │               │         │
+        ─────        │                                   │               ▼────────►
+                     │                                   │
+        ─────        │                                   │
+                     │                                   │   ────────────────►
+                     │                                   │       ciężkie blokujące operacje delegujemy
+                     │                                   │       do osobnego wątku
+                     │                                   │
+                     └─► ────────────────────────────────►
+
+
+https://asciiflow.com/#/
+
+
+
