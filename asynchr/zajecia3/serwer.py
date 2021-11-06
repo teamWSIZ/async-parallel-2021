@@ -29,6 +29,12 @@ async def hello(request):
     return web.json_response({'comment': 'Welcome!'})
 
 
+@routes.get('/render')
+async def render(request):
+    # ciężka operacja -- wykorzystująca run_in_executor
+    return web.json_response({'comment': 'Welcome!'})
+
+
 @routes.get('/square')
 async def hello(request):
     # odpalanie: http://0.0.0.0:4000/square?x=12

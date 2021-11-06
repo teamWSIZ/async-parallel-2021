@@ -1,2 +1,6 @@
 aiohttp
 aiohttp_cors
+
+
+# asynchroniczne podłączenie bazy danych
+asyncpg
