@@ -61,7 +61,13 @@ app.router.add_routes(routes)
 print(app.router.routes())
 
 for route in list(app.router.routes()):
-    print(f'adding {route}')
+    # print(f'adding {route}')
     cors.add(route)
 
-web.run_app(app, port=4001)
+
+async def starter():
+    await sleep(0.2)
+    print('app is starting..')
+
+if __name__ == '__main__':
+    web.run_app(starter(), port=4001)
