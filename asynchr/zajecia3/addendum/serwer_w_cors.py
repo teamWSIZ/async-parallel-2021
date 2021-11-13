@@ -2,6 +2,7 @@ from asyncio import sleep
 
 import aiohttp_cors
 from aiohttp import web
+from aiohttp.abc import BaseRequest
 
 routes = web.RouteTableDef()
 
@@ -45,6 +46,43 @@ async def hello(request):
     return web.json_response({'result': xx})
 
 
+@routes.post('/upload')
+async def accept_file(req: BaseRequest):
+    # https://docs.aiohttp.org/en/stable/web_quickstart.html#file-uploads
+    print('file upload request hit...')
+    reader = await req.multipart()
+
+    # field = await reader.next()
+    # name = await field.read(decode=True)
+
+    field = await reader.next()
+    assert field.name == 'file'
+    print(f'read field object: {field}')
+    filename = field.filename
+    # Cannot rely on Content-Length if transfer is chunked.
+    print(f'filename:{filename}')
+    filename = 'images/' + filename
+    size = 0
+    with open(filename, 'wb') as f:
+        file_as_bytes = b''
+        while True:
+            chunk = await field.read_chunk()  # 8192 bytes by default.
+            print(type(chunk))
+            if not chunk:
+                break
+            size += len(chunk)
+            file_as_bytes += chunk
+            # f.write(chunk)
+        f.write(file_as_bytes)
+
+    return web.json_response({'name': filename, 'size': size})
+
+
+@routes.get('/serve')
+async def serve_file(req: BaseRequest):
+    return web.FileResponse('out.png')
+
+
 #  setup generous CORS:
 app = web.Application()
 
@@ -66,8 +104,15 @@ for route in list(app.router.routes()):
 
 
 async def starter():
+    """
+    Starter / app factory, czyli miejsce gdzie można inicjalizować asynchronicze konstrukty.
+
+    :return:
+    """
     await sleep(0.2)
     print('app is starting..')
+    return app
+
 
 if __name__ == '__main__':
     web.run_app(starter(), port=4001)
