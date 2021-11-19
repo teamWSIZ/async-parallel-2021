@@ -49,7 +49,7 @@ class DbService:
     @cached(TTLCache(10, ttl=600))
     async def get_all_persons(self) -> List[Person]:
         async with self.pool.acquire() as c:
-            rows = await c.fetch('select * from s1.person')
+            rows = await c.fetch('select * from s1.person order by name')
         return [Person(**d) for d in dicts(rows)]
 
     async def update_person(self, person: Person):
@@ -83,11 +83,11 @@ class DbService:
 
 
 async def run_it():
-    pool = await create_pool()
-    db = DbService(pool)
+    db = DbService()
+    await db.initalize()
     print(await db.get_all_persons())
     print(await db.create_person(Person(0, 'xiaoli')))
-    p = Person(3, 'xiaoli3')
+    p = Person(3, 'xiaoli11')
     print(await db.update_person(p))
     log('--')
 
