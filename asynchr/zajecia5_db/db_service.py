@@ -1,7 +1,6 @@
 import asyncio
 from dataclasses import dataclass
-from datetime import date, datetime, timedelta
-from typing import List, Dict, Tuple
+from typing import List
 
 import asyncpg
 from asyncache import cached
@@ -44,10 +43,8 @@ async def create_pool():
 class DbService:
     pool: asyncpg.pool.Pool
 
-    def __init__(self, pool: asyncpg.pool.Pool):
-        self.pool = pool
-
-    # DISTRICTS
+    async def initalize(self):
+        self.pool = await create_pool()
 
     @cached(TTLCache(10, ttl=600))
     async def get_all_persons(self) -> List[Person]:
@@ -67,6 +64,13 @@ class DbService:
             d = dict(res[0])
             return Person(**d)
 
+    async def delete_person(self, id: int):
+        async with self.pool.acquire() as c:
+            await c.execute('''
+                            DELETE FROM s1.person
+                            WHERE id = $1
+                            ''', id)
+
     async def create_person(self, person: Person) -> Person:
         p = person
         async with self.pool.acquire() as c:
@@ -82,7 +86,7 @@ async def run_it():
     pool = await create_pool()
     db = DbService(pool)
     print(await db.get_all_persons())
-    print(await db.create_person(Person(0,'xiaoli')))
+    print(await db.create_person(Person(0, 'xiaoli')))
     p = Person(3, 'xiaoli3')
     print(await db.update_person(p))
     log('--')
