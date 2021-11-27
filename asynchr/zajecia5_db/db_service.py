@@ -46,7 +46,7 @@ class DbService:
     async def initalize(self):
         self.pool = await create_pool()
 
-    @cached(TTLCache(10, ttl=600))
+    @cached(TTLCache(10, ttl=2))
     async def get_all_persons(self) -> List[Person]:
         async with self.pool.acquire() as c:
             rows = await c.fetch('select * from s1.person order by name')

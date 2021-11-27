@@ -22,7 +22,7 @@ async def hello(request):
 
 
 @routes.get('/persons')
-async def render(request):
+async def get_persons(request):
     persons = await db.get_all_persons()
     return web.json_response([p.__dict__ for p in persons])
 
