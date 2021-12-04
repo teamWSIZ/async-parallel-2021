@@ -4,3 +4,6 @@ aiohttp_cors
 
 # asynchroniczne podłączenie bazy danych
 asyncpg
+
+# asynchroniczny dostęp do sqlite
+aiosqlite
