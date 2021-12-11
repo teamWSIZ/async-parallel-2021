@@ -44,7 +44,8 @@ class User:
 @dataclass
 class Pictures:
     pictureid: int
-    data: bytes
+    data: bytes # pełny obrazek
+    data_thumbnail: bytes
     filename: str
     description: str
     creator_userid: int  # kreator i właściciel obrazka - opcje "w" (zapisu/update/delete dla obrazka)
