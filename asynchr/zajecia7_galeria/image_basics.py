@@ -1,6 +1,8 @@
 from PIL import Image, ImageOps
 from PIL.Image import BICUBIC
 
+# pip install Pillow
+
 image = Image.open('sample.png')
 print(image.size)  # (800, 701)
 image = image.crop((0, 0, 600, 600))

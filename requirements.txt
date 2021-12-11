@@ -7,3 +7,6 @@ asyncpg
 
 # asynchroniczny dostęp do sqlite
 aiosqlite
+
+# praca z obrazkami
+Pillow
