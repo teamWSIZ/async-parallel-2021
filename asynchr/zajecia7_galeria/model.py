@@ -42,7 +42,7 @@ class User:
 
 
 @dataclass
-class Pictures:
+class Picture:
     pictureid: int
     data: bytes # pełny obrazek
     data_thumbnail: bytes
@@ -50,7 +50,9 @@ class Pictures:
     description: str
     creator_userid: int  # kreator i właściciel obrazka - opcje "w" (zapisu/update/delete dla obrazka)
     created: datetime.datetime
-    updated: datetime.datetime
+
+    def __repr__(self) -> str:
+        return f'Picture[{self.pictureid}, name={self.filename}, descr={self.description}]'
 
 
 @dataclass
