@@ -5,7 +5,9 @@ import aiosqlite
 from aiohttp import web
 from aiohttp.abc import BaseRequest
 
-from asynchr.zajecia7_galeria.db_access import fetch_picture, pil_image_from_picture
+from asynchr.zajecia7_galeria.db_access import DbService
+from asynchr.zajecia7_galeria.helpers import pil_image_from_picture, file_2_picture
+from asynchr.zajecia7_galeria.model import Picture
 
 routes = web.RouteTableDef()
 
@@ -25,27 +27,43 @@ async def hello(request):
 
 """
 todo: 
-- serwis bazy danych (a nie funkcje)
-- odpowiednio RETURNING przy tworzeniu instancji
+- serwis bazy danych (a nie funkcje)                            [OK]
+- odpowiednio RETURNING przy tworzeniu instancji                [OK]
 - endpointy do ściągania thumbnaili obrazków
 - ew. konwersja na thumbnaili na bas64 image... 
+...
+- logika userów - tworzenie, modyfikacja, hasła
 - logowanie usera ... → token (potrzebny do update obrazków)
-- zmiana hasła usera
 ...
 - tag-i obrazków, oraz endpointy do nadawania tagów obrazkom...
 ...
 - frontend systemu...
 """
 
-@routes.get('/pictures/{id}')
+
+@routes.get('/pictures/{id}/full')
 async def serve_file(req):
     print('get image of given pictureid')
-    async with aiosqlite.connect('pic_db.db') as db:
-        id = int(req.match_info.get('id', '0'))
-        pic = (await fetch_picture(db, id))
-        image = await pil_image_from_picture(pic, full_image=True)
-        image.save('_' + pic.filename)
+    iid = int(req.match_info['id'])
+    pic = await db().fetch_picture(iid)
+    image = pil_image_from_picture(pic, full_image=True)
+    image.save('_' + pic.filename)
     return web.FileResponse('_' + pic.filename)
+
+@routes.get('/pictures')
+async def serve_file(req):
+    print('fetch all picture thumbnails')
+    images = await db().fetch_thumbnails_all_pictures()
+    for pic in images:
+        serialize_picture_meta(pic)
+
+    return web.json_response([pic.__dict__ for pic in images])
+
+
+
+def serialize_picture_meta(pic: Picture):
+    pic.created = str(pic.created)
+    pic.data = ''
 
 
 @routes.post('/upload')
@@ -57,32 +75,21 @@ async def accept_file(req: BaseRequest):
     # field = await reader.next()
     # name = await field.read(decode=True)
 
-    field = await reader.next()
-    assert field.name == 'file'
-    print(f'read field object: {field}')
+    field = await reader.next()  # field.name =='file'
     filename = field.filename
-    # Cannot rely on Content-Length if transfer is chunked.
-    print(f'filename:{filename}')
-    filename = 'images/' + filename
-    size = 0
-    with open(filename, 'wb') as f:
-        file_as_bytes = b''
+    print(f'upload filename:{filename}')
+    path = 'images/' + filename
+    with open(path, 'wb') as f:
         while True:
             chunk = await field.read_chunk()  # 8192 bytes by default.
-            print(type(chunk))
             if not chunk:
                 break
-            size += len(chunk)
-            file_as_bytes += chunk
-            # f.write(chunk)
-        f.write(file_as_bytes)
-
-    return web.json_response({'name': filename, 'size': size})
-
-
-@routes.get('/serve')
-async def serve_file____(req: BaseRequest):
-    return web.FileResponse('out.png')
+            f.write(chunk)
+    pic = file_2_picture(filename, 'images/')
+    pic = await db().insert_picture(pic)
+    pic.data = ''
+    serialize_picture_meta(pic)
+    return web.json_response(pic.__dict__)
 
 
 #  setup generous CORS:
@@ -105,6 +112,11 @@ for route in list(app.router.routes()):
     cors.add(route)
 
 
+def db() -> DbService:
+    # helper/alias
+    return app['db']
+
+
 async def starter():
     """
     Starter / app factory, czyli miejsce gdzie można inicjalizować asynchronicze konstrukty.
@@ -112,6 +124,7 @@ async def starter():
     :return:
     """
     print('app is starting..')
+    app['db'] = DbService('pic_db.db')
     return app
 
 

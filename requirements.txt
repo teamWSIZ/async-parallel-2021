@@ -10,3 +10,9 @@ aiosqlite
 
 # praca z obrazkami
 Pillow
+
+# asynchroniczny dostęp do bazy danych redis
+aioredis
+
+# biblioteka do performance-testów
+locust

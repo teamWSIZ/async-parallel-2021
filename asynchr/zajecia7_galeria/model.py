@@ -44,8 +44,8 @@ class User:
 @dataclass
 class Picture:
     pictureid: int
-    data: bytes # pełny obrazek
-    data_thumbnail: bytes
+    data: bytes  # pełny obrazek
+    data_thumbnail: str  # base64 string (bezpośrednio używalny w html-u)
     filename: str
     description: str
     creator_userid: int  # kreator i właściciel obrazka - opcje "w" (zapisu/update/delete dla obrazka)
