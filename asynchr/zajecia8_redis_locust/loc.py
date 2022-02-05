@@ -19,11 +19,14 @@ class QuickstartUser(FastHttpUser):
     def hello_world(self):
         self.client.get('/')
 
-    # @task
+    # @task(5)
     # def get_khresults(self):
-    #     self.client.get('/results')
+    #     mintime_mm = 1
+    #     maxtime_mm = mintime_mm + randint(0,20)
+    #     # self.client.get(f'/results?mintime=2:{mintime_mm}:00&maxtime=2:{maxtime_mm}:00')
+    #     self.client.get(f'/results')
     #
-    # @task
+    # @task(1)
     # def put_khresults(self):
     #     r = HKRunner(randint(0, 10000), choice(['Kenya', 'Ethiopia', 'Japan']), 2 * 3600 + randint(500, 2000))
     #     self.client.put('/results', json=asdict(r))
