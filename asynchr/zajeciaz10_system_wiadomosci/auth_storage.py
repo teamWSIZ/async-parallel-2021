@@ -19,7 +19,13 @@ class AuthStorage:
             await db.execute('create table if not exists topics (topic text unique, secret text)')
             await db.commit()
 
-    async def insert_users(self, name, password):
+    async def cleanup_db(self):
+        async with aiosqlite.connect(self.filename) as db:
+            await db.execute('delete from users where true')
+            await db.execute('delete from topics where true')
+            await db.commit()
+
+    async def insert_user(self, name, password):
         async with aiosqlite.connect(self.filename) as db:
             await db.execute('insert into users(username, password) values(?, ?)', (name, password))
             await db.commit()
@@ -54,6 +60,6 @@ if __name__ == '__main__':
     async def main():
         db = AuthStorage('aa.db')
         await db.create_table_users()
-        await db.insert_users('abra', 'kadabra')
+        await db.insert_user('abra', 'kadabra')
 
     asyncio.run(main())
