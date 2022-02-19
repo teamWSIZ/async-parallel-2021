@@ -93,5 +93,5 @@ async def db1():
         # await purge_users(db, 30)
         # print(await fetch_users(db))
 
-
-asyncio.run(db1())
+if __name__ == '__main__':
+    asyncio.run(db1())

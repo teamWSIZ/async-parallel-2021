@@ -1,4 +1,5 @@
 from asyncio import sleep
+from random import randint
 
 import aiohttp_cors
 from aiohttp import web
@@ -28,11 +29,13 @@ async def hello(request):
 async def hello(request):
     return web.json_response({'comment': 'Welcome!'})
 
+consumers = []
 
 @routes.get('/render')
 async def render(request):
     # ciężka operacja -- wykorzystująca run_in_executor
-    return web.json_response({'comment': 'Welcome!'})
+    consumers.append(randint(1,10))
+    return web.json_response({'comment': f'Welcome {consumers}!'})
 
 
 @routes.get('/square')

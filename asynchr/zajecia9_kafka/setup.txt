@@ -1,0 +1,62 @@
+
+
+
+
+
+
+
+                                             Messaging
+
+
+
+                                                        http(s) GET|PUT|DELETE          ┌────────────────┐
+                           ┌───────────┐                                                │                │
+       .                   │           │ ┌────────────────────────────────────────────► │serwer; api     │
+                           │           │ │                                              │                │
+                           │klient     │                                                │                │
+                           │           │ ◄───────────────────────────────────────────── │                │
+                           │           │                                                │                │
+                           └───────────┘                                              │ └────────────────┘ ────────────────────┐
+                                                                                      │        ▲                               │
+                                                                                      │        │                               │
+                                                                       ┌───◄──────────┘        │                               │
+                                                                       │                       │                               │
+                                                                       │                       │     wewnetrzny protokół       │
+                                                                       │                       │       komunikacji             │
+                                                                       │                       │                               │
+                                                                       │                       │                               │
+                  ....                                            GET  │                       │                               │
+                - komunikacja typu email (for somebody)                │                       │                               │
+                - komunikacja typu "grup dyskusyjnych"                 │                       │                               │
+                   - publisher <> subscriber                           │                       │                               │
+                                                                       │                       │                               ▼
+                                                                       │                       └────────────── ┌────────────────┐
+                                                                       │                                       │                │
+                         P     P                                       │                                       │ DB             │
+                         │     │                                       ▼                                       │                │
+                         │     │                                 ┌──────────────┐                              │                │
+                         │     │                                 │              │                              │                │
+                         │     │                                 │ auth service │                              │                │
+                         │     │                                 │              │                              │                │
+                         ▼     ▼                                 │              │                              └────────────────┘
+                       ┌───────────┐   9093                      │              │
+      S  ◄──────────── │           │◄───────  P                  └──────────────┘
+                       │broker     │
+                       │zbiera     │
+                       │wiadomosci │◄──────── P (publisher/writer)
+      S  ◄───────────  │           │
+                       │10.10.35.1 │
+                       └───┬───────┘ 9093
+                           │
+                           │
+                           │
+                           │
+                           ▼
+                      S (subscriber/reader)   [group_id == identyfikator subskrybenta]
+
+
+           JMS / RabbitMQ
+           Kafka  (ditributed... wiele serwerów pracujących jako "broker")
+           .....
+
+
