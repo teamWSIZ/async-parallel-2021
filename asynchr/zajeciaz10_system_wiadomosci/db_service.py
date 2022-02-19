@@ -7,7 +7,7 @@ from aiosqlite.core import Connection
 
 
 async def create_table_users(db: Connection):
-    await db.execute('create table users (name text, password text)')
+    await db.execute('create table users (name text unique, password text)')
     await db.commit()
     print('table created')
 
