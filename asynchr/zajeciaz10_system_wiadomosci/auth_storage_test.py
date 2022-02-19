@@ -45,3 +45,17 @@ class Test(IsolatedAsyncioTestCase):
         self.assertEqual(res, False)
 
 
+    async def test_update_passwd(self):
+        user = 'user'
+        await self.db.insert_user(user, 'kadabra')
+        await self.db.update_password(user, 'kadabra', 'SECRET')
+        res = await self.db.check_user(user, 'SECRET')
+        self.assertEqual(res, True)
+
+    async def test_update_oldpassword_does_not_work(self):
+        user = 'user'
+        await self.db.insert_user(user, 'kadabra')
+        await self.db.update_password(user, 'kadabra', 'SECRET')
+        res = await self.db.check_user(user, 'kadabra')
+        self.assertEqual(res, False)
+

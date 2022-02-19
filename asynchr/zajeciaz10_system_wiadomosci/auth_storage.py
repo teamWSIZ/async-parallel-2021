@@ -40,6 +40,15 @@ class AuthStorage:
                 else:
                     return False
 
+    async def update_password(self, username, old_password, new_password):
+        if not await self.check_user(username, old_password):
+            raise Exception('Wrong password')
+        async with aiosqlite.connect(self.filename) as db:
+            await db.execute('update users set password=? where username=?', (new_password, username))
+            await db.commit()
+
+
+
     async def insert_topic(self, topic, secret):
         async with aiosqlite.connect(self.filename) as db:
             await db.execute('insert into topics(topic, secret) values(?, ?)', (topic, secret))
