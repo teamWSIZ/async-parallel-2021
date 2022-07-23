@@ -13,11 +13,11 @@ class HKRunner:
 
 
 class QuickstartUser(FastHttpUser):
-    wait_time = between(0.1, 0.2)
+    wait_time = between(0.001, 0.002)
 
     @task(30)
     def hello_world(self):
-        self.client.get('/')
+        self.client.get('/status')
 
     # @task(5)
     # def get_khresults(self):

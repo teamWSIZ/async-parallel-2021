@@ -82,7 +82,7 @@ async def fetch_all_pic(db):
 
 async def db1():
     async with aiosqlite.connect('a.db') as db:
-        # await create_table_pic(db)
+        await create_table_pic(db)
         await insert_pic(db, 'gg')
         print(await fetch_all_pic(db))
 

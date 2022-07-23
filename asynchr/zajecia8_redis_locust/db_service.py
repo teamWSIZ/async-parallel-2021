@@ -30,7 +30,6 @@ class DbService:
     async def get_results_for_times(self, mintime: int, maxtime: int) -> List[HKRunner]:
         res = await self.redis.zrangebyscore(KEY, mintime, maxtime)
         result = []
-        # print(res)  #[b'{"race_no": 101010, "country": "Portugal", "time": 11111}', b'{"race_no": 101011, "country": "Algieria", "time": 11112}']
         for bs in res:
             data = json.loads(bs.decode('UTF-8'))
             hkr = HKRunner(**data)
